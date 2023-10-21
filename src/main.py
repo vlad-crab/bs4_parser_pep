@@ -20,8 +20,12 @@ def whats_new(session):
         return
     soup = BeautifulSoup(response.text, features='lxml')
     main_div = find_tag(soup, 'section', attrs={'id': 'what-s-new-in-python'})
-    div_with_ul = find_tag(main_div, 'div', attrs={'class': 'toctree-wrapper compound'})
-    sections_by_python = div_with_ul.find_all('li', attrs={'class': 'toctree-l1'})
+    div_with_ul = find_tag(
+        main_div, 'div', attrs={'class': 'toctree-wrapper compound'}
+    )
+    sections_by_python = div_with_ul.find_all(
+        'li', attrs={'class': 'toctree-l1'}
+    )
 
     for section in tqdm(sections_by_python):
         version_a_tag = find_tag(section, 'a')
