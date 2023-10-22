@@ -1,6 +1,7 @@
 import re
 from urllib.parse import urljoin
 import logging
+from collections import defaultdict
 
 from requests_cache import CachedSession
 from bs4 import BeautifulSoup
@@ -108,18 +109,7 @@ def pep(session):
     )
     table_body = find_tag(numerical_index, 'tbody')
     rows = table_body.find_all('tr')
-    results = {
-        'All': 0,
-        'Active': 0,
-        'Accepted': 0,
-        'Deferred': 0,
-        'Final': 0,
-        'Provisional': 0,
-        'Rejected': 0,
-        'Superseded': 0,
-        'Withdrawn': 0,
-        'Draft': 0,
-    }
+    results = defaultdict(int)
     for row in rows:
         td = find_tag(row, 'td')
         title = td.abbr['title']
@@ -146,9 +136,10 @@ def pep(session):
             )
             continue
         results[status_on_pep_page] += 1
-        results['All'] += 1
     list_of_results = [('Status', 'Count'), ]
     list_of_results.extend(results.items())
+    all_count = sum(results.values())
+    list_of_results.append(('All', all_count))
     return list_of_results
 
 
